@@ -1,0 +1,4 @@
+*~
+.rbenv-version
+/.project
+pkg/

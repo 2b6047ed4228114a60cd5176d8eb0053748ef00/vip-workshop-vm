@@ -1,0 +1,15 @@
+body {
+	font-family:"Open Sans", "Helvetica Neue", sans-serif;
+}
+#content {
+	padding-left: 20%;
+}
+
+h1 {
+	text-align: center;
+}
+
+p.sample-code a, p.exercises a {
+	font-size: 90%;
+	margin-left: 7px;
+}

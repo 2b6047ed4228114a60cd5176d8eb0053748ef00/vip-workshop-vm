@@ -1,0 +1,27 @@
+# File Managed by Puppet
+ 
+server {
+    listen <%= @port %>;
+    server_name <%= @name %> <%= @serveraliases %>;
+    root /home/vagrant/www;
+
+    access_log  <%= scope.lookupvar('nginx::log_dir')%>/<%= @name %>.access.log;
+    error_log  <%= scope.lookupvar('nginx::log_dir')%>/<%= @name %>.error.log;
+
+    location ~ \.php$ {
+        client_max_body_size 0;
+        try_files      $uri =404;
+        fastcgi_pass   127.0.0.1:9000;
+        fastcgi_index  index.php;
+        include        /etc/nginx/fastcgi_params;
+    }
+
+    location ~ '^/([a-z-]+)' {
+        index index.php index.html;
+        try_files $uri $uri/ /$1/index.php?$args;
+    }
+
+    rewrite ^(.*)\.phps$ /high/index.php?uri=$1;
+
+    gzip off;
+}
