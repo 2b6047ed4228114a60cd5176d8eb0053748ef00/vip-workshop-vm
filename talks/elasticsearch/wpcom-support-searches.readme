@@ -1,0 +1,15 @@
+File format is:
+"Search Text", "Number of queries"
+
+Data is for one week of queries on en.support.wordpress.com
+
+
+Sum of queries that occurred once:
+cat wpcom-support-searches.csv | cut -d ',' -f 2 | grep -e "^1$" | awk '{ sum += $1 } END { print sum }'
+
+Common Words:
+cat wpcom-support-searches.csv | grep -e ",1$" | cut -d ',' -f 1 | tr '[:upper:]' '[:lower:]' | tr -d '[:punct:]' | tr ' ' '\n' | sort | uniq -c | sort -rn | less
+
+
+
+
