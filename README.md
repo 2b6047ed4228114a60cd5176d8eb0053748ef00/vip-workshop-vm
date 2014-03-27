@@ -29,9 +29,9 @@ How to Install
 2. Check out `https://github.com/Automattic/vip-workshop-vm`
 3. Run `vagrant up`.
 4. Wait :-)
-5. Map `10.86.73.80` to `vip.dev` in your hosts file or in your local
+5. Map `10.86.73.81` to `vip-workshop.dev` in your hosts file or in your local
    DNS server.
-6. You can now open `http://vip.dev/` or run `vagrant ssh`
+6. You can now open `http://vip-workshop.dev/` or run `vagrant ssh`
 
 How Does It Work
 ----------------
@@ -44,7 +44,7 @@ services with the proper configs.
 Conventions
 -------------------------------------------
 
-* Use `http://vip.dev/talk-slug` as the URL of your demo sites
+* Use `http://vip-workshop.dev/talk-slug` as the URL of your demo sites
 * Whenever you need to choose a username and a password, choose
   `wordpress`/`wordpress`.
 
@@ -56,7 +56,7 @@ Host Directory Structure
 ├── talks – holds all the talk files, synced to `~/.talks` on the VM.
 │   └── talk-slug
 │
-└── www – holds the web interface for `http://vip.dev/` – talks listing,
+└── www – holds the web interface for `http://vip-workshop.dev/` – talks listing,
          source file highlighting service. Synced to `~/www` on the VM.
 
 Distributing Updates to the Attendee VM

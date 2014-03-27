@@ -14,7 +14,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "precise32"
   config.vm.box_url = "http://files.vagrantup.com/precise32.box"
   config.vm.hostname = ENV['QUICKSTART_DOMAIN']
-  config.vm.network :private_network, ip: "10.86.73.80"
+  config.vm.network :private_network, ip: "10.86.73.81"
 
   config.vm.synced_folder ".", "/srv"
   
@@ -33,7 +33,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     puppet.manifest_file  = "init.pp"
     puppet.options = ['--templatedir', '/vagrant/puppet/files']
     puppet.facter = {
-      "quickstart_domain" => 'vip.dev',
+      "quickstart_domain" => 'vip-workshop.dev',
     }
   end
   
