@@ -26,7 +26,7 @@ How to Install
 0. Install [Vagrant](http://downloads.vagrantup.com/), preferably the
    latest 1.5 version. Less than 1.1 will not work.
 1. Install [VirtualBox](https://www.virtualbox.org/wiki/Downloads).
-2. Check out `https://github.com/Automattic/vip-workshop-vm`
+2. Check out `https://github.com/2b6047ed4228114a60cd5176d8eb0053748ef00/vip-workshop-vm`
 3. Run `vagrant up`.
 4. Wait :-)
 5. Map `10.86.73.81` to `vip-workshop.dev` in your hosts file or in your local
@@ -58,22 +58,3 @@ Host Directory Structure
 │
 └── www – holds the web interface for `http://vip-workshop.dev/` – talks listing,
          source file highlighting service. Synced to `~/www` on the VM.
-
-Distributing Updates to the Attendee VM
----------------------------------------
-
-We have set up a private gist on Github that the attendees will be able to
-access. Since only one person can push to a gist, Josh will need to "deploy"
-changes that occur in the private Github repo.
-
-Attendees can get the VM by running
-
-```
-git clone https://gist.github.com/??? && vagrant up
-```
-
-Attendees can update their VM by running
-
-```
-git pull && vagrant provision
-```
