@@ -6,7 +6,7 @@
 if ( isset( $_SERVER['WP_HOME'] ) ) {
 	$url = $_SERVER['WP_HOME'];
 } else {
-	$url = '@@@WP_HOME@@@';
+	$url = 'http://vip-workshop.dev/security';
 }
 
 $nonce = '...um...'; // now what?

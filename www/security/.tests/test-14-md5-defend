@@ -15,13 +15,13 @@ page.onAlert = function( msg ) {
 };
 
 page.setContent(
-	'<img src="http://dakuten.local/Checkouts/vip-napa-evil/wordpress/wp-admin/admin-post.php?action=vip_background_color_image&value=%23ffe1ae&reason=known&hash=4009b3716fbbfb374ab9f8ebcc31ed88" onload="alert(/no/)" />',
+	'<img src="' + wp.url + 'wordpress/wp-admin/admin-post.php?action=vip_background_color_image&value=%23ffe1ae&reason=known&hash=4009b3716fbbfb374ab9f8ebcc31ed88" onload="alert(/no/)" />',
 	'http://example.com/'
 );
 
 setTimeout( function() {
 	page.setContent(
-		'<img src="http://dakuten.local/Checkouts/vip-napa-evil/wordpress/wp-admin/admin-post.php?action=vip_background_color_image&value=%23ff0000&reason=OK&hash=d1a76a72686581ccc79b59669c2a57c1" onload="alert(/yes/)" />',
+		'<img src="' + wp.url + 'wordpress/wp-admin/admin-post.php?action=vip_background_color_image&value=%23ff0000&reason=OK&hash=d1a76a72686581ccc79b59669c2a57c1" onload="alert(/yes/)" />',
 		'http://example.com/'
 	);
 }, 2000 );
