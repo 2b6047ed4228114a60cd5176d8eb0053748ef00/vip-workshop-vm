@@ -13,7 +13,7 @@ page.onLoadFinished = function() {
 			return document.cookie;
 		} );
 
-		if ( 'color=%23deface' === cookie ) {
+		if ( -1 !== cookie.indexOf( 'color=%23deface' ) ) {
 			console.log( "CSRF Successfully Exploited" );
 			phantom.exit();
 		} else {

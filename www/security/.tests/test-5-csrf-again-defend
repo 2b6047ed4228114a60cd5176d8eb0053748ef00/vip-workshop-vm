@@ -28,7 +28,7 @@ maliciousPage.open( wp.url, function() {
 				return document.cookie;
 			} );
 
-			if ( 'color=%23deface' === cookie ) {
+			if ( -1 !== cookie.indexOf( 'color=%23deface' ) ) {
 				console.log( 'CSRF Exploit Still Vulnerable' );
 				phantom.exit( 1 );
 			} else {
