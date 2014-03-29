@@ -1,0 +1,38 @@
+#!/bin/bash
+
+while getopts 'hf:' opt; do
+	case $opt in
+	h)
+		echo -e "\033[1mNAME\033[0m"
+		echo
+		echo -e "\timage - Generate an image of the specified text and background color"
+		echo
+		echo -e "\033[1mSYNOPSIS\033[0m"
+		echo
+		echo -e "\t\033[1mimage\033[0m [ \033[1m-h\033[0m ] [ \033[1m-f\033[0m \033[4mmessage_file\033[0m ] [ \033[4mcolor\033[0m ] [ \033[4mmessage\033[0m ]"
+		echo
+		echo -e "\033[1mDESCRIPTION\033[0m"
+		echo
+		echo -e "\tGenerate an image using the text from \033[4mmessage\033[0m or the contents of"
+		echo -e "\t\033[4mmessage_file\033[0m and \033[4mcolor\033[0m as the background color."
+		echo
+		echo -e "\033[1mOPTIONS\033[0m"
+		echo -e "\t-h  Display this help message."
+		echo
+		echo -e "\t-f  Use the contents of \033[4mmessage_file\033[0m as the message."
+		echo
+		exit
+		;;
+	f)
+		message=$( cat $OPTARG )
+		;;
+	esac
+done
+
+shift $((OPTIND - 1))
+
+color=${1-"#FFFFFF"}
+message=${2-$message}
+dir=$( dirname "$0" )
+
+php "$dir"/image.php "$color" "$message"

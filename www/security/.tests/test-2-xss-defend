@@ -1,0 +1,12 @@
+#!/bin/bash
+
+set -e
+
+DIR=$( dirname "$0" 2> /dev/null )
+DIR=$( "$DIR"/absdir "$DIR" 2> /dev/null )
+
+echo "Test 1..."
+"$DIR"/test-2-xss-defend.js
+
+echo "Test 2..."
+"$DIR"/test-2-xss-defend.php

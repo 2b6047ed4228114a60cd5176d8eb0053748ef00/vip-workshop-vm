@@ -1,0 +1,50 @@
+#!/usr/bin/env phantomjs
+
+var wp = require( './wp' );
+var fs = require('fs');
+var page = wp.page();
+
+var f = fs.open( wp.dir + 'attacks/0-open-redirect.html', 'r' );
+var attack = wp.fix_url( f.read() );
+f.close();
+
+var my_host = wp.url.match( /https?:\/\/([^\/:]+)/ )[1];
+
+page.onLoadFinished = function() {
+	var OK;
+
+	page.onLoadFinished = function() {
+		var host = page.evaluate( function() {
+			return document.location.hostname;
+		} );
+
+		if ( my_host === host ) {
+			console.log( 'Redirect Exploit Failed' );
+			phantom.exit( 1 );
+		} else {
+			console.log( 'Redirect Exploit Succeeded!' );
+			phantom.exit();
+		}
+	};
+
+	OK = page.evaluate( function( my_host ) {
+		var links = document.getElementsByTagName( 'a' );
+		var i;
+
+		for ( i = 0; i < links.length; i++ ) {
+			if ( 0 === links[i].href.indexOf( 'http://' + my_host ) || 0 === links[i].href.indexOf( 'https://' + my_host ) ) {
+				document.location = links[i].href;
+				return true;
+			}
+		}
+
+		return false;
+	}, my_host );
+
+	if ( ! OK ) {
+		console.log( 'Redirect Exploit Failed Spectacularly' );
+		phantom.exit( 1 );
+	}
+};
+
+page.setContent( attack, 'http://example.com/' );
