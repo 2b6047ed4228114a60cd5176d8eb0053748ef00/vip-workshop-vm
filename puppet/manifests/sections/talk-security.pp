@@ -27,3 +27,8 @@ file { '/srv/www/security/attacks/7-clickjacking.png':
   ensure => file,
   mode   => 666,
 }
+
+file { '/srv/www/security/wp-content/debug.log':
+  ensure => file,
+  mode   => 666,
+}
