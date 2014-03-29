@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 set -e
 
@@ -19,10 +19,10 @@ PATH="$PATH":"$ROOT"/bin
 function finish {
 	if [ 0 -ne $? ]
 	then
-		echo "\033[1;31mFAILED"'!'"\033[0m"
+		echo -e "\033[1;31mFAILED"'!'"\033[0m"
 		echo "$TEST_RESULT"
 	else
-		echo "\033[1;32mPASSED"'!'"\033[0m"
+		echo -e "\033[1;32mPASSED"'!'"\033[0m"
 		echo "$TEST_RESULT"
 		if [ -n "$RESULT" ]
 		then
