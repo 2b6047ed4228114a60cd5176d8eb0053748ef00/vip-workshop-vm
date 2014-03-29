@@ -1,0 +1,40 @@
+#!/usr/bin/env phantomjs
+
+var wp = require( './wp' );
+
+var visitorPage = wp.page( 'VICTIM' );
+var maliciousPage = wp.page( 'MALICIOUS' );
+
+visitorPage.open( wp.url, function() {
+	setTimeout( function() {
+		var xss;
+
+		xss = visitorPage.evaluate( function() {
+			return !!document.getElementById( 'deface' );
+		} );
+
+		if ( xss ) {
+			console.log( "XSS Vulnerability Still Exploitable" )
+			phantom.exit( 1 );
+		} else {
+			console.log( "XSS Vulnerability Successfully Closed" );
+			phantom.exit();
+		}
+	}, 6000 );
+} );
+
+setTimeout( function() {
+	maliciousPage.open( wp.url, function() {
+		maliciousPage.evaluate( function() {
+			var doit = function() {
+				save_color( '#deface" /><br id="deface' );
+			};
+
+			if ( 'function' === typeof save_color ) {
+				doit();
+			} else {
+				setTimeout( doit, 1000 );
+			}
+		} );
+	} );
+}, 1000 );

@@ -1,0 +1,50 @@
+#!/usr/bin/env phantomjs
+
+var wp = require( './wp' );
+
+var webpage = require( 'webpage' );
+
+var maliciousPage = wp.page( 'MALICIOUS' );
+
+maliciousPage.open( wp.url, function() {
+	var nonce = maliciousPage.evaluate( function() {
+		var nonce = document.getElementById( '_wpnonce' );
+		if ( nonce ) {
+			return nonce.getAttribute( 'value' );
+		} else {
+			return false;
+		}
+	} );
+
+	if ( ! nonce ) {
+		console.log( 'CSRF Exploit Still Vulnerable: No Nonce Detected.' );
+		phantom.exit( 1 );
+	}
+
+	phantom.clearCookies();
+
+	var victimPage = wp.page( 'VICTIM' );
+
+	victimPage.onLoadFinished = function() {
+		victimPage.onLoadFinished = function() {};
+	
+		victimPage.open( wp.url, function() {
+			var cookie = victimPage.evaluate( function() {
+				return document.cookie;
+			} );
+
+			if ( -1 !== cookie.indexOf( 'color=%23deface' ) ) {
+				console.log( 'CSRF Exploit Still Vulnerable' );
+				phantom.exit( 1 );
+			} else {
+				console.log( 'CSRF Exploit Successfully Closed' );
+				phantom.exit();
+			}
+		} );
+	};
+	
+	victimPage.setContent(
+		'<img src="' + wp.url + 'wordpress/wp-admin/admin-post.php?action=vip_background_color_pick&value=%23deface&_wpnonce=' + nonce + '" />',
+		'http://example.com/'
+	);
+} );

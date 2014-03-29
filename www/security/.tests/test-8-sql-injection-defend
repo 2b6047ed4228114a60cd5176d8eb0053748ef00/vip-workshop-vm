@@ -1,0 +1,59 @@
+#!/usr/bin/env phantomjs
+
+var wp = require( './wp' );
+var page = wp.page();
+
+page.open( wp.url, function() {
+	var OK = false;
+
+	page.onLoadFinished = function() {
+		var title = page.evaluate( function() {
+			return jQuery( '.widget_vip_background_color_picker .widget-title' ).text();
+		} );
+
+		if ( -1 < title.indexOf( 'evil@example.borscht' ) ) {
+			console.log( 'SQL Injection Still Vulnerable.' );
+			phantom.exit( 1 );
+		} else {
+			console.log( 'SQL Injection Vulnerability Successfully Closed.' );
+			phantom.exit();
+		}
+	};
+
+	console.log( 'Test #1...' );
+
+	page.evaluate( function() {
+		save_color( "#ff0001', ( SELECT `user_email` FROM `evil_users` WHERE `ID` = '1' ) ) #" );
+	} );
+
+	setTimeout( function() {
+		page.evaluate( function() {
+			window.test_OK = true;
+
+			get_recent_colors( function( data ) {
+				jQuery( data ).find( 'reason' ).each( function() {
+					if ( 'evil@example.borscht' === jQuery( this ).text() ) {
+						window.test_OK = false;
+					}
+				} );
+			} );
+		} );
+	}, 2000 );
+
+	setTimeout( function() {
+		OK = page.evaluate( function() {
+			return window.test_OK;
+		} );
+
+		if ( ! OK ) {
+			console.log( 'SQL Injection Still Vulnerable.' );
+			phantom.exit( 1 );
+		} else {
+			console.log( 'Test #2...' );
+			page.evaluate( function() {
+				jQuery( '#vip-background-color-picker-input' ).val( "nope' UNION SELECT `user_email` AS reason FROM `evil_users` WHERE `ID` = '1" );
+				jQuery( '#vip-background-color-picker' ).submit();
+			} );
+		}
+	}, 4000 );
+} );

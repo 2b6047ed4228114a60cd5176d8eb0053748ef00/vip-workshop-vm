@@ -1,0 +1,26 @@
+#!/usr/bin/env phantomjs
+
+var wp = require( './wp' );
+var page = wp.page();
+
+page.open( wp.url, function() {
+	page.onLoadFinished = function() {
+		var title = page.evaluate( function() {
+			return jQuery( '.widget_vip_background_color_picker .widget-title' ).text();
+		} );
+
+		if ( -1 < title.indexOf( 'SUPERSECRET' ) ) {
+			console.log( 'Vulnerability Still Exists' );
+			phantom.exit( 1 );
+		} else {
+			console.log( 'Vulnerability Successful1y Closed!' );
+			phantom.exit();
+		}
+	};
+
+	page.evaluate( function() {
+		jQuery( '#vip-background-color-picker-input' ).val( '#ff0000' );
+		jQuery( '#vip-background-color-picker-reason' ).val( 'red{${substr(a.$a=AUTH_SALT,0,1)}}' );
+		jQuery( '#vip-background-color-picker' ).submit();
+	} );
+} );

@@ -1,0 +1,93 @@
+#vip-background-color-picker {
+	color: #2b2b2b;
+}
+
+#vip-background-color-picker p {
+	margin: 0;
+	padding: 0;
+}
+
+#vip-background-color-picker input {
+	font-size: 16px;
+	height: 2.5em;
+	float: left;
+	border-radius: 0;
+	box-sizing: border-box;
+}
+
+#vip-background-color-picker input[type=color] {
+	width: 33%;
+	background-color: #ddd;
+	cursor: pointer;
+}
+
+#vip-background-color-picker input[type=text] {
+	width: 67%;
+}
+
+#vip-background-color-picker input[type=color]:hover,
+#vip-background-color-picker input[type=color]:focus,
+#vip-background-color-picker .recent-colors a:hover,
+#vip-background-color-picker .recent-colors a:focus {
+	background-color: #eee;
+}
+#vip-background-color-picker input[type=color]:active,
+#vip-background-color-picker .recent-colors a:active {
+	background-color: #fff;
+}
+
+#vip-background-color-picker input[type=submit] {
+	width: 50%;
+}
+
+#vip-background-color-picker input[name=clear] {
+	background-color: #89240d;
+}
+#vip-background-color-picker input[name=clear]:hover,
+#vip-background-color-picker input[name=clear]:focus {
+	background-color: #a6412a;
+}
+#vip-background-color-picker input[name=clear]:active {
+	background-color: #d75537;
+}
+
+#vip-background-color-picker .submit:after {
+	content: ".";
+	display: block;
+	clear: both;
+	visibility: hidden;
+	line-height: 0;
+	height: 0;
+}
+
+#vip-background-color-picker h2 {
+	clear: both;
+	margin: 1em 0;
+	font-size: 14px;
+	font-weight: 900;
+}
+
+#vip-background-color-picker .recent-colors a {
+	display: inline-block;
+	border: 1px solid rgba(0, 0, 0, 0.1);
+	padding: 4px;
+	background-color: #ddd;
+	height: 29px;
+	min-width: 42px;
+}
+
+#vip-background-color-picker .recent-colors img {
+	height: 27px;
+	min-width: 40px;
+	border: 1px solid #777;
+	padding: 0;
+	margin: 0;
+}
+
+#vip-background-color-picker .recent-colors li:nth-of-type( n + 7 ) {
+	display: none;
+}
+
+#vip-background-color-picker .recent-colors:empty:after {
+	content: "No one has picked any colors recently."
+}

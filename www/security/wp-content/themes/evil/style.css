@@ -1,0 +1,59 @@
+/*
+Theme Name: Security
+Template: twentyfourteen
+*/
+
+@import url( "../twentyfourteen/style.css" );
+
+.entry-title {
+	margin-bottom: 0;
+}
+
+.entry-meta {
+	display: none;
+}
+
+.content-sidebar .widget .widget-title {
+	text-transform: none;
+}
+
+/* Attack */
+
+.single-paged-2 .site-header,
+.single-paged-2 #secondary,
+.single-paged-2 .site-footer,
+.single-paged-2 .search-toggle,
+.single-paged-2 .site:before,
+.single-paged-2 #vip-test input {
+	background-color: #89240d;
+}
+
+.single-paged-2 .search-toggle:hover,
+.single-paged-2 .search-toggle.active,
+.single-paged-2 .search-box,
+.single-paged-2 .page-links a:hover,
+.single-paged-2 #vip-test input:hover {
+	background-color: #a6412a;
+}
+
+.single-paged-2 .page-links a:hover {
+	border-color: #a6412a;
+}
+
+/* Defend */
+
+.single-paged-3 .site-header,
+.single-paged-3 #secondary,
+.single-paged-3 .site-footer,
+.single-paged-3 .site:before,
+.single-paged-3 #vip-test input {
+	background-color: #24890d;
+}
+
+.single-paged-3 #vip-test input:hover {
+	background-color: #41a62a;
+}
+
+.paging-navigation {
+	display: none;
+}

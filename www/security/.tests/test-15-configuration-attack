@@ -1,0 +1,4 @@
+#!/usr/bin/env phantomjs
+
+console.log( "There's no Attack Verification for this one." );
+phantom.exit( 0 );

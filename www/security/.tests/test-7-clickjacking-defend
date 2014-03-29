@@ -1,0 +1,122 @@
+#!/usr/bin/env phantomjs
+
+var wp = require( './wp' );
+var page = wp.page();
+
+var attack = '<style>iframe {opacity: 0.2;position: absolute;top: 0;left: 0;width: 800px;height: 600px;border: 0;padding: 0;margin: 0;}.bu' + 'nny, .ki' + 'tty {position: absolute;display: inline-block;background: red;}.bu' + 'nny {left: 560px;top: 285px;}.ki' + 'tty { left: 590px; top: 200px; }</style><a href="#" class="bu' + 'nny">BU' + 'NNY!</a><a href="#" class="ki' + 'tty">KI' + 'TTY!</a><iframe src="' + wp.url + '"></iframe>';
+
+page.viewportSize = {
+	width: 800,
+	height: 600
+};
+
+function getLinkCoords( text ) {
+	return page.evaluate( function( text ) {
+		var links = document.getElementsByTagName( 'a' );
+		var link;
+		var i;
+		var bounds;
+
+		for ( i = 0; i < links.length; i++ ) {
+			if ( text === links[i].textContent ) {
+				link = links[i];
+				break;
+			}
+		}
+
+		if ( ! link ) {
+			return [ 0, 0 ];
+		}
+
+		bounds = link.getBoundingClientRect();
+
+		return [
+			parseInt( bounds.left + ( bounds.right - bounds.left ) / 2, 10 ),
+			parseInt( bounds.top + ( bounds.bottom - bounds.top ) / 2, 10 )
+		]
+	}, text );
+}
+
+function afterClear() {
+	console.log( 'Clear complete.' );
+	page.onLoadFinished = function() {};
+
+	console.log( 'Setting up White...' );
+	page.evaluate( function() {
+		save_color( '#ffffff' );
+	} );
+
+	setTimeout( function() {
+		console.log( 'Setting up #deface...' );
+		page.evaluate( function() {
+			save_color( '#deface' );
+		} );
+	}, 4000 );
+
+	setTimeout( function() {
+		console.log( 'Setting up White...' );
+		page.evaluate( function() {
+			save_color( '#ffffff' );
+		} );
+	}, 6000 );
+
+	setTimeout( function() {
+		page.open( wp.url, afterSetup );
+	}, 8000 );
+}
+
+function afterSetup() {
+	console.log( 'Setup complete.' );
+	page.onLoadFinished = afterLoadIframe;
+
+	page.setContent( attack, 'http://example.com/' );
+}
+
+function afterLoadIframe() {
+	console.log( 'Clickjacking Site Loaded' );
+	page.onLoadFinished = function() {};
+
+	setTimeout( function() {
+		var bCoords, kCoords;
+
+		bCoords = getLinkCoords( 'BU' + 'NNY!' );
+		console.log( "Found BU" + "NNY! @", bCoords );
+
+		kCoords = getLinkCoords( 'KI' + 'TTY!' );
+		console.log( "Found KI" + "TTY! @", kCoords );
+
+		page.sendEvent( 'click', bCoords[0], bCoords[1] );
+		page.sendEvent( 'click', kCoords[0], kCoords[1] );
+
+		page.render( wp.dir + 'attacks/7-clickjacking.png' );
+
+		setTimeout( function() {
+			page.open( wp.url, function() {
+				var color = page.evaluate( function() {
+					return jQuery( 'div.site' ).css( 'background-color' );
+				} );
+
+				color = color.replace( /\s/g, '' );
+				
+				switch ( color ) {
+				case 'rgb(222,250,206)':
+				case 'rgba(222,250,206,1)':
+				case '#deface':
+					phantom.exit( 1 );
+					break;
+				default:
+					phantom.exit();
+					break;
+				}
+			} );
+		}, 2000 );
+	}, 2000 );
+}
+
+page.open( wp.url, function() {
+	page.onLoadFinished = afterClear;
+
+	page.evaluate( function() {
+		jQuery( ':submit[name=clear]' ).click();
+	} );
+} );

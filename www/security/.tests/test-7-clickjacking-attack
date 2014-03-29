@@ -1,0 +1,83 @@
+#!/usr/bin/env phantomjs
+
+var wp = require( './wp' );
+var fs = require('fs');
+var page = wp.page();
+
+var f = fs.open( wp.dir + 'attacks/7-clickjacking.html', 'r' );
+var attack = wp.fix_url( f.read() );
+f.close();
+
+page.viewportSize = {
+	width: 800,
+	height: 600
+};
+
+function getLinkCoords( text ) {
+	return page.evaluate( function( text ) {
+		var links = document.getElementsByTagName( 'a' );
+		var link;
+		var i;
+		var bounds;
+
+		for ( i = 0; i < links.length; i++ ) {
+			if ( text === links[i].textContent ) {
+				link = links[i];
+				break;
+			}
+		}
+
+		if ( ! link ) {
+			return [ 0, 0 ];
+		}
+
+		bounds = link.getBoundingClientRect();
+
+		return [
+			parseInt( bounds.left + ( bounds.right - bounds.left ) / 2, 10 ),
+			parseInt( bounds.top + ( bounds.bottom - bounds.top ) / 2, 10 )
+		]
+	}, text );
+}
+
+page.onLoadFinished = function() {
+	page.onLoadFinished = function() {};
+
+	setTimeout( function() {
+		var bCoords, kCoords;
+
+		bCoords = getLinkCoords( 'BU' + 'NNY!' );
+		console.log( "Found BU" + "NNY! @", bCoords );
+
+		kCoords = getLinkCoords( 'KI' + 'TTY!' );
+		console.log( "Found KI" + "TTY! @", kCoords );
+
+		page.sendEvent( 'click', bCoords[0], bCoords[1] );
+		page.sendEvent( 'click', kCoords[0], kCoords[1] );
+
+		page.render( wp.dir + 'attacks/7-clickjacking.png' );
+
+		setTimeout( function() {
+			page.open( wp.url, function() {
+				var color = page.evaluate( function() {
+					return jQuery( 'div.site' ).css( 'background-color' );
+				} );
+
+				color = color.replace( /\s/g, '' );
+				
+				switch ( color ) {
+				case 'rgb(222,250,206)':
+				case 'rgba(222,250,206,1)':
+				case '#deface':
+					phantom.exit();
+					break;
+				default:
+					phantom.exit( 1 );
+					break;
+				}
+			} );
+		}, 2000 );
+	}, 2000 );
+};
+
+page.setContent( attack, 'http://example.com/' );

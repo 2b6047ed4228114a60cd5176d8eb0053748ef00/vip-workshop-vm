@@ -1,0 +1,32 @@
+#!/usr/bin/env phantomjs
+
+var wp = require( './wp' );
+var fs = require('fs');
+var page = wp.page();
+
+page.onAlert = function( msg ) {
+	if ( -1 === msg.indexOf( 'yes' ) ) {
+		console.log( 'Hash Attack Still Vulnerable.' );
+		phantom.exit( 1 );
+	} else {
+		console.log( 'Hash Attack Successfully Closed!' );
+		phantom.exit();
+	}
+};
+
+page.setContent(
+	'<img src="' + wp.url + 'wordpress/wp-admin/admin-post.php?action=vip_background_color_image&value=%23ffe1ae&reason=known&hash=4009b3716fbbfb374ab9f8ebcc31ed88" onload="alert(/no/)" />',
+	'http://example.com/'
+);
+
+setTimeout( function() {
+	page.setContent(
+		'<img src="' + wp.url + 'wordpress/wp-admin/admin-post.php?action=vip_background_color_image&value=%23ff0000&reason=OK&hash=d1a76a72686581ccc79b59669c2a57c1" onload="alert(/yes/)" />',
+		'http://example.com/'
+	);
+}, 2000 );
+
+setTimeout( function() {
+	console.log( 'Hm... the vulnerability is probably closed, but this one is hard to verify.' );
+	phantom.exit();
+}, 4000 );

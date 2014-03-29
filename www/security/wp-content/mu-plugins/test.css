@@ -1,0 +1,36 @@
+#vip-test {
+	float: left;
+	height: 48px;
+	margin-left: 3em;
+}
+#vip-test input {
+	padding: 1em;
+	height: 40px;
+	border: 2px solid #fff;
+	margin: 4px 0;
+}
+
+@media screen and (min-width: 1008px) {
+	#vip-test {
+		float: none;
+		position: absolute;
+		top: 0;
+		left: 182px;
+		margin-left: 0;
+	}
+}
+
+@media screen and (min-width: 1080px) {
+	#vip-test {
+		left: 222px;
+	}
+}
+
+.widget_text .widget-title:hover {
+	color: #41a62a;
+	cursor: pointer;
+}
+
+.widget_text .textwidget {
+	display: none;
+}

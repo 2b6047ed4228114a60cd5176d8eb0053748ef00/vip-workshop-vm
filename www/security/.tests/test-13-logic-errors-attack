@@ -1,0 +1,36 @@
+#!/usr/bin/env phantomjs
+
+var wp = require( './wp' );
+var fs = require('fs');
+var page = wp.page();
+
+var f = fs.open( wp.dir + 'attacks/13-logic-errors.html', 'r' );
+var attack = wp.fix_url( f.read() );
+f.close();
+
+page.onLoadFinished = function() {
+	page.onLoadFinished = function() {};
+
+	var params = page.evaluate( function() {
+		var img = document.getElementsByTagName( 'img' )[0];
+		return {
+			width: img.width,
+			src: img.src
+		}
+	} );
+
+	if ( -1 === params.src.indexOf( '&value=%23deface' ) ) {
+		console.log( 'Wrong color :(' );
+		phantom.exit( 1 );
+	}
+
+	if ( params.width > 20 ) {
+		console.log( 'Hash Attack Successful!' );
+		phantom.exit();
+	} else {
+		console.log( 'Hash Attack Unsuccessful.' );
+		phantom.exit( 1 );
+	}
+};
+
+page.setContent( attack, 'http://example.com/' );

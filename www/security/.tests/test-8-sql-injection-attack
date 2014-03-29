@@ -1,0 +1,25 @@
+#!/usr/bin/env phantomjs
+
+var wp = require( './wp' );
+var page = wp.page();
+
+page.open( wp.url, function() {
+	page.onLoadFinished = function() {
+		var title = page.evaluate( function() {
+			return jQuery( '.widget_vip_background_color_picker .widget-title' ).text();
+		} );
+
+		if ( -1 < title.indexOf( 'evil@example.borscht' ) ) {
+			console.log( 'Attack Successful1!' );
+			phantom.exit();
+		} else {
+			console.log( 'Attack Unsuccessful1!' );
+			phantom.exit( 1 );
+		}
+	};
+
+	console.log( 'Injecting 8-sql-injection.js...' );
+	page.evaluate( function( url ) {
+		jQuery.getScript( url + 'attacks/8-sql-injection.js' );
+	}, wp.url );
+} );
