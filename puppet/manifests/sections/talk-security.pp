@@ -22,3 +22,8 @@ mysql::queryfile { 'security.sql':
   mysql_password   => 'password_here',
   mysql_host       => 'localhost',
 }
+
+file { '/srv/www/security/attacks/7-clickjacking.png':
+  ensure => file,
+  mode   => 666,
+}
