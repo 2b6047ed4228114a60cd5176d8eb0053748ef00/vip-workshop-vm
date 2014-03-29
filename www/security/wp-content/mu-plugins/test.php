@@ -67,7 +67,10 @@ class VIP_Test {
 				2 => array( 'pipe', 'w' ),
 			),
 			$pipes,
-			dirname( ABSPATH )
+			dirname( ABSPATH ),
+			array(
+				'PATH' => '/usr/local/node/node-default/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/games:/opt/vagrant_ruby/bin',
+			)
 		);
 
 		$out = stream_get_contents( $pipes[1] );
