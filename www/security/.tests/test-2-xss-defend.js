@@ -28,6 +28,8 @@ maliciousPage.open( wp.url, function() {
 	} );
 
 	setTimeout( function() {
+		phantom.clearCookies();
+
 		victimPage.open( wp.url, function() {
 			var exists = victimPage.evaluate( function() {
 				return !!document.getElementById( 'deface' );

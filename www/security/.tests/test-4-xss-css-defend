@@ -11,6 +11,8 @@ maliciousPage.open( wp.url, function() {
 	} );
 
 	setTimeout( function() {
+		phantom.clearCookies();
+
 		victimPage.open( wp.url, function() {
 			victimPage.onLoadFinished = function() {
 				var color = victimPage.evaluate( function() {
@@ -33,7 +35,7 @@ maliciousPage.open( wp.url, function() {
 			};
 
 			victimPage.evaluate( function() {
-				jQuery( '.recent-colors input:first' ).click();
+				jQuery( '.recent-colors img:first' ).click();
 				jQuery( '#vip-background-color-picker' ).submit();
 			} );
 		} );

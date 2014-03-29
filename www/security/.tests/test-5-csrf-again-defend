@@ -2,7 +2,8 @@
 
 var wp = require( './wp' );
 
-var victimPage = wp.page( 'VICTIM' );
+var webpage = require( 'webpage' );
+
 var maliciousPage = wp.page( 'MALICIOUS' );
 
 maliciousPage.open( wp.url, function() {
@@ -19,6 +20,10 @@ maliciousPage.open( wp.url, function() {
 		console.log( 'CSRF Exploit Still Vulnerable: No Nonce Detected.' );
 		phantom.exit( 1 );
 	}
+
+	phantom.clearCookies();
+
+	var victimPage = wp.page( 'VICTIM' );
 
 	victimPage.onLoadFinished = function() {
 		victimPage.onLoadFinished = function() {};

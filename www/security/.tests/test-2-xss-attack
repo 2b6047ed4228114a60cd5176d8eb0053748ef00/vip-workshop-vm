@@ -46,6 +46,8 @@ maliciousPage.open( wp.url, function() {
 	}, wp.url );
 
 	setTimeout( function() {
+		phantom.clearCookies();
+
 		console.log( "Victim: loading homepage" );
 		victimPage.open( wp.url );
 	}, 3000 );

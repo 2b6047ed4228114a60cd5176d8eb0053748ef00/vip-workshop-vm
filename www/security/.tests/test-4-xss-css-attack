@@ -13,6 +13,8 @@ maliciousPage.open( wp.url, function() {
 	}, wp.url );
 
 	setTimeout( function() {
+		phantom.clearCookies();
+
 		console.log( "Victim: loading homepage" );
 		victimPage.open( wp.url, function() {
 			victimPage.onLoadFinished = function() {
@@ -38,7 +40,7 @@ maliciousPage.open( wp.url, function() {
 
 			console.log( "Victim: clicking first recent color, submitting form" );
 			var recent = victimPage.evaluate( function() {
-				var recent = jQuery( '.recent-colors a:first' ).click().size();
+				var recent = jQuery( '.recent-colors img:first' ).click().size();
 				jQuery( '#vip-background-color-picker' ).submit();
 				return recent;
 			} );

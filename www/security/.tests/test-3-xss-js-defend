@@ -20,19 +20,21 @@ visitorPage.open( wp.url, function() {
 			console.log( "XSS Vulnerability Successfully Closed" );
 			phantom.exit();
 		}
-	}, 5000 );
+	}, 6000 );
 } );
 
-maliciousPage.open( wp.url, function() {
-	maliciousPage.evaluate( function() {
-		var doit = function() {
-			save_color( '#deface" /><br id="deface' );
-		};
+setTimeout( function() {
+	maliciousPage.open( wp.url, function() {
+		maliciousPage.evaluate( function() {
+			var doit = function() {
+				save_color( '#deface" /><br id="deface' );
+			};
 
-		if ( 'function' === typeof save_color ) {
-			doit();
-		} else {
-			setTimeout( doit, 1000 );
-		}
+			if ( 'function' === typeof save_color ) {
+				doit();
+			} else {
+				setTimeout( doit, 1000 );
+			}
+		} );
 	} );
-} );
+}, 1000 );
