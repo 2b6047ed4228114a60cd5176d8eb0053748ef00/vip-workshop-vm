@@ -45,13 +45,17 @@ function show_recent_colors( data ) {
 	} );
 }
 
-function save_color( value, reason ) {
-	jQuery.ajax( {
+function save_color( value, reason, callback ) {
+	var jqXHR = jQuery.ajax( {
 		type: "POST",
 		url: VIP_Color_Picker.ajax_url + '?action=save_color',
 		contentType: "text/xml",
 		data: "<colors><color><value><![" + "CDATA[" + value + "]]" + "></value><reason>" + ( reason || "" ) + "</reason></color></colors>"
 	} );
+
+	if ( 'function' === typeof callback ) {
+		jqXHR.done( callback );
+	}
 }
 
 // http://24ways.org/2010/calculating-color-contrast/
