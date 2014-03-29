@@ -45,13 +45,13 @@ class VIP_Test {
 			<input type="hidden" name="action" value="test_exploit" />
 			<input type="hidden" name="test" value="<?php echo esc_attr( $name ); ?>" />
 			<input type="hidden" name="type" value="<?php echo esc_attr( $type ); ?>" />
-			<?php wp_nonce_field( 'test' ); ?>
+			<?php wp_nonce_field( 'test', 'test_nonce' ); ?>
 		</form>
 	<?php
 	}
 
 	function handle() {
-		check_admin_referer( 'test' );
+		check_admin_referer( 'test', 'test_nonce' );
 
 		$test = preg_replace( '/[^a-z0-9-]/i', '', $_POST['test'] );
 
