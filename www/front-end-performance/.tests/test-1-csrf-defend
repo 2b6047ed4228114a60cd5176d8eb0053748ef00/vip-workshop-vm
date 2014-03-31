@@ -1,0 +1,89 @@
+#!/usr/bin/env phantomjs
+
+var wp = require( './wp' );
+var page = wp.page();
+
+function test_zero() {
+	console.log( 'Test 0...' );
+	page.open( wp.url, function() {
+		var OK = false;
+
+		setTimeout( function() {
+			page.evaluate( function() {
+				save_color( '#ff0000', '', function() {
+					window.test_OK = true;
+				} );
+			} );
+		}, 1000 );
+
+		setTimeout( function() {
+			OK = page.evaluate( function() {
+				return window.test_OK || false;
+			} );
+
+			if ( ! OK ) {
+				console.log( 'The save_color() JavaScript function no longer works :(' );
+				phantom.exit( 1 );
+			} else {
+				test_one();
+			}
+		}, 3000 );
+	} );
+}
+
+function test_one() {
+	console.log( 'Test 1...' );
+	page.onLoadFinished = function() {
+		page.onLoadFinished = function() {};
+	
+		page.open( wp.url, function() {
+			var cookie = page.evaluate( function() {
+				return document.cookie;
+			} );
+
+			if ( 'color=%23deface' === cookie ) {
+				console.log( 'CSRF Exploit Still Vulnerable' );
+				phantom.exit( 1 );
+			} else {
+				console.log( 'Nice! You fixed the main CSRF Vulnerability :)' );
+				test_two();
+			}
+		} );
+	};
+
+	page.setContent(
+		'<img src="' + wp.url + 'wordpress/wp-admin/admin-post.php?action=vip_background_color_pick&value=%23deface" />',
+		'http://example.com/'
+	);
+}
+
+function test_two() {
+	console.log( 'Test 2...' );
+
+	page.onLoadFinished = function() {
+		page.onLoadFinished = function() {};
+		page.open( wp.url, function() {
+			var cookie = page.evaluate( function() {
+				return document.cookie;
+			} );
+
+			if ( 'color=%23deface' === cookie ) {
+				console.log( 'Tricky CSRF Exploit Still Vulnerable' );
+				phantom.exit( 1 );
+			} else {
+				console.log( 'Nice! You fixed the Tricky CSRF Vulnerability :)' );
+				phantom.exit();
+			}
+		} );
+	};
+
+	// We have to cheat - PhantomJS doesn't support <form enctype="text/plain">
+	page.customHeaders = { 'Content-Type': 'text/plain; charset=UTF-8' };
+	page.open(
+		wp.url + 'wordpress/wp-admin/admin-ajax.php?action=save_color',
+		'POST',
+		'<colors><color><value thing="">#deface</value><reason>CSRF</reason></color></colors>'
+	);
+}
+
+test_zero();

@@ -1,0 +1,36 @@
+#!/usr/bin/env phantomjs
+
+var wp = require( './wp' );
+var page = wp.page();
+
+page.open( wp.url, function() {
+	page.onLoadFinished = function() {
+		page.onLoadFinished = function() {};
+
+		page.open( wp.url, function() {
+			var height = page.evaluate( function() {
+				return jQuery( '.recent-colors img:first' ).css( {
+					'max-width': 'none',
+					'max-height': 'none',
+					'width': 'auto',
+					'height': 'auto'
+				} ).height();
+			} );
+
+			if ( 1000 < height ) {
+				console.log( 'Attack Successful1!' );
+				phantom.exit();
+			} else {
+				console.log( 'Attack Unsuccessful1!' );
+				phantom.exit( 1 );
+			}
+		} );
+	};
+
+	setTimeout( function() {
+		console.log( 'Injecting 11-os-injection.js...' );
+		page.evaluate( function( url ) {
+			jQuery.getScript( url + 'attacks/11-os-injection.js' );
+		}, wp.url );
+	}, 1000 );
+} );

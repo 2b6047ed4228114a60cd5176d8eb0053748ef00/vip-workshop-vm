@@ -1,0 +1,38 @@
+#!/usr/bin/env phantomjs
+
+var wp = require( './wp' );
+var page = wp.page();
+
+page.open( wp.url, function() {
+	page.evaluate( function() {
+		jQuery.ajax( {
+			type: "POST",
+			url: VIP_Color_Picker.ajax_url + '?action=save_color&_wpnonce=' + jQuery( '#vip-background-color-picker input[name=_wpnonce]' ).val(),
+			data: '<colors><color><value>#deface</value><reason></reason></color></colors>',
+			success: function( data ) {
+				if ( 'string' === typeof data ) {
+					window.TESTresponse = data;
+				} else {
+					window.TESTresponse = data.firstChild.textContent;
+				}
+			},
+			error: function() {
+				window.TESTresponse = '';
+			}
+		} );
+	} );
+
+	setTimeout( function() {
+		var response = page.evaluate( function() {
+			return window.TESTresponse;
+		} );
+
+		if ( -1 === response.indexOf( '#defacecdd65b8f111f26dea84f7c3f70a97574' ) ) {
+			console.log( 'Configuration Vulnerability Successfully Closed.' );
+			phantom.exit();
+		} else {
+			console.log( 'Configuration Vulnerability Still Exploitable!' );
+			phantom.exit( 1 );
+		}
+	}, 2000 );
+} );

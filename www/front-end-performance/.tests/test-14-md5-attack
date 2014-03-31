@@ -1,0 +1,47 @@
+#!/usr/bin/env phantomjs
+
+var wp = require( './wp' );
+var fs = require('fs');
+var page = wp.page();
+
+var f = fs.open( wp.dir + 'attacks/14-md5.html', 'r' );
+var attack = wp.fix_url( f.read() );
+f.close();
+
+// I'd rather look at the image element's src attribute using the page's DOM
+// Like I do for the width.  There's a bug in PhantomJS, though that causes
+// the exit value to be 0 if I do no matter how I call phantom.exit() :(
+
+if ( -1 === attack.indexOf( '&value=%23deface' ) ) {
+	console.log( 'Wrong color :(' );
+	phantom.exit( 1 );
+}
+
+if ( -1 === attack.indexOf( '&reason=MWAHAHA!' ) ) {
+	console.log( 'Wrong reason :(' );
+	phantom.exit( 1 );
+}
+
+if ( -1 !== attack.indexOf( '&hash=4e67d7fc438b3d00d26507052eb2bcdb' ) ) {
+	console.log( 'No cheating :)' );
+	phantom.exit( 1 );
+}
+
+page.onLoadFinished = function() {
+	page.onLoadFinished = function() {};
+
+	var width = page.evaluate( function() {
+		var img = document.getElementsByTagName( 'img' )[0];
+		return img.width;
+	} );
+
+	if ( width > 100 ) {
+		console.log( 'Hash Attack Successful!' );
+		phantom.exit();
+	} else {
+		console.log( 'Hash Attack Unsuccessful.' );
+		phantom.exit( 1 );
+	}
+};
+
+page.setContent( attack, 'http://example.com/' );

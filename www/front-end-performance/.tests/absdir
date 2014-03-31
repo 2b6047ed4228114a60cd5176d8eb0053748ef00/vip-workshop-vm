@@ -1,0 +1,14 @@
+#!/bin/sh
+
+TARGET_DIR=$1
+
+RESULT=$( readlink -f "$TARGET_DIR" 2> /dev/null )
+if [ 0 -eq $? ]
+then
+	echo "$RESULT"
+	exit
+fi
+
+cd "$TARGET_DIR"
+pwd -P
+cd - &> /dev/null

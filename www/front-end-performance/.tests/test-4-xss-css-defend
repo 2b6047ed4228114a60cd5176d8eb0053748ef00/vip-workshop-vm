@@ -1,0 +1,43 @@
+#!/usr/bin/env phantomjs
+
+var wp = require( './wp' );
+
+var victimPage = wp.page( 'VICTIM' );
+var maliciousPage = wp.page( 'MALICIOUS' );
+
+maliciousPage.open( wp.url, function() {
+	maliciousPage.evaluate( function() {
+		save_color( '#deface;color:#deface !important' );
+	} );
+
+	setTimeout( function() {
+		phantom.clearCookies();
+
+		victimPage.open( wp.url, function() {
+			victimPage.onLoadFinished = function() {
+				var color = victimPage.evaluate( function() {
+					return jQuery( 'div.site' ).css( 'color' );
+				} );
+
+				color = color.replace( /\s/g, '' ).toLowerCase();
+
+				switch ( color ) {
+				case 'rgb(222,250,206)':
+				case 'rgba(222,250,206,1)':
+				case '#deface':
+					phantom.exit( 1 );
+					break;
+				default:
+					phantom.exit();
+					break;
+				}
+
+			};
+
+			victimPage.evaluate( function() {
+				jQuery( '.recent-colors img:first' ).click();
+				jQuery( '#vip-background-color-picker' ).submit();
+			} );
+		} );
+	}, 3000 );
+} );

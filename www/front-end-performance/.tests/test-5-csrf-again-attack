@@ -1,0 +1,31 @@
+#!/usr/bin/env phantomjs
+
+var wp = require( './wp' );
+var execFile = require( 'child_process' ).execFile;
+var page = wp.page();
+
+page.onLoadFinished = function() {
+	page.onLoadFinished = function() {};
+
+	console.log( 'Victim: viewing ' + wp.url );
+	page.open( wp.url, function() {
+		var cookie = page.evaluate( function() {
+			return document.cookie;
+		} );
+
+		if ( -1 !== cookie.indexOf( 'color=%23deface' ) ) {
+			console.log( "CSRF Successfully Exploited" );
+			phantom.exit();
+		} else {
+			console.log( "CSRF Unsuccessfully Exploited" );
+			phantom.exit( 1 );
+		}
+	} );
+};
+
+console.log( 'Serving attacks/5-csrf-again.php from example.com' );
+execFile( 'php', [ wp.dir + 'attacks/5-csrf-again.php' ], null, function( error, stdout, stderr ) {
+	console.error( stderr );
+	console.log( 'Victim: viewing example.com' );
+	page.setContent( stdout, 'http://example.com/' );
+} );

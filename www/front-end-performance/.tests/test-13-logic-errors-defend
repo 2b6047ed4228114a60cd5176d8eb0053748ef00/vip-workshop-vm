@@ -1,0 +1,98 @@
+#!/usr/bin/env phantomjs
+
+var wp = require( './wp' );
+var fs = require('fs');
+var page = wp.page();
+
+var next;
+var error;
+
+page.onLoadFinished = function() {
+	var width = page.evaluate( function() {
+		return document.getElementsByTagName( 'img' )[0].width;
+	} );
+
+	if ( width > 20 ) {
+		console.log( error );
+		phantom.exit( 1 );
+	} else if ( ! next ) {
+		console.log( 'Logic Error Vulnerabilities Successfully Closed!' );
+		phantom.exit();
+	} else {
+		next();
+	}
+};
+
+function test1() {
+	console.log( 'Test 1...' );
+
+	error = 'Hash Vulnerability Still Exploitable.';
+	next = test2;
+
+	page.setContent(
+		'<img src="' + wp.url + 'wordpress/wp-admin/admin-post.php?action=vip_background_color_image&amp;value=%23deface&amp;reason=NQPh!&amp;hash=nope" />',
+		'http://example.com/'
+	);
+}
+
+function test2() {
+	console.log( 'Test 2...' );
+
+	error = 'Hash Vulnerability Still Exploitable.';
+	next = test3;
+
+	page.setContent(
+		'<img src="' + wp.url + 'wordpress/wp-admin/admin-post.php?action=vip_background_color_image&amp;value=%23deface&amp;reason=NQPh!&amp;hash=0" />',
+		'http://example.com/'
+	);
+}
+
+function is_black( color ) {
+	color = color.replace( /\s/g, '' ).toLowerCase();
+	
+	switch ( color ) {
+		case 'rgb(0,0,0)':
+		case 'rgba(0,0,0,1)':
+		case '#000000':
+		case '#000':
+		case 'black':
+			return true;
+			break;
+	}
+
+	return false;
+}
+
+function test3() {
+	page.onLoadFinished = function() {};
+
+	console.log( 'Test 3...' );
+
+	next = null;
+
+	page.open( wp.url, function() {
+		page.evaluate( function() {
+			save_color( '#00e999', 'ooooh' );
+		} );
+
+		setTimeout( function() {
+			page.open( wp.url, function() {
+				var colors = page.evaluate( function() {
+					return [ jQuery( 'div.site' ).css( 'background-color' ), jQuery( 'div.site' ).css( 'color' ) ];
+				} );
+
+				if ( is_black( colors[0] ) && is_black( colors[1] ) ) {
+					console.log( 'Minor Logic Error Still Exists.' );
+					phantom.exit( 1 );
+				} else {
+					console.log( 'All Logic Errors Fixed!' );
+					phantom.exit();
+				}
+			} );
+		}, 2000 );
+	} );
+}
+
+next = test1;
+
+next();

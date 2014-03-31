@@ -1,0 +1,38 @@
+#!/usr/bin/env phantomjs
+
+var wp = require( './wp' );
+var page = wp.page();
+
+page.open( wp.url, function() {
+	page.evaluate( function( dir ) {
+		jQuery.ajax( {
+			type: "POST",
+			url: VIP_Color_Picker.ajax_url + '?action=save_color&_wpnonce=' + jQuery( '#vip-background-color-picker input[name=_wpnonce]' ).val(),
+			data: '<!DOCTYPE colors [<!ENTITY xxe SYSTEM "php://filter/read=convert.base64-encode/resource=' + dir + 'wp-config.php"> ]>\n<colors><color><value>&xxe;</value><reason>&xxe;</reason></color></colors>',
+			success: function( data ) {
+				if ( 'string' === typeof data ) {
+					window.TESTresponse = data;
+				} else {
+					window.TESTresponse = data.firstChild.textContent;
+				}
+			},
+			error: function() {
+				window.TESTresponse = '';
+			}
+		} );
+	}, wp.dir );
+
+	setTimeout( function() {
+		var response = page.evaluate( function() {
+			return window.TESTresponse;
+		} );
+
+		if ( -1 === response.indexOf( 'PD9waHAKCi8vIFRoaXMgZmlsZSBpcyBzdXBlciBzZWNyZXQhIERvbid0IGxldCBhbnlvbmUgcmVhZCBpdCE' ) ) {
+			console.log( 'XXE Vulnerability Successfully Closed.' );
+			phantom.exit();
+		} else {
+			console.log( 'XXE Vulnerability Still Exploitable!' );
+			phantom.exit( 1 );
+		}
+	}, 2000 );
+} );
