@@ -12,7 +12,7 @@ function pbe_load_ad() {
 
 	$rand = (int) ( isset( $_GET['rand'] ) ) ? $_GET['rand'] : rand( 0, 1000000000 );
 	?>
-	<div style="width: 300px; height: 250px; background: pink;"><!--<img src="<?php echo esc_url( $ad_url ); ?>" alt="Advertising" />--></div>
+	<div style="width: 300px; height: 250px; background: pink;">Advertising</div>
 	<script>var ad_rand = '<?php echo esc_js( $rand ) ?>';</script>
 	<?php
 	exit;
