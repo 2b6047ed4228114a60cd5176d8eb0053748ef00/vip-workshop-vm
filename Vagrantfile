@@ -15,6 +15,10 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box_url = "http://files.vagrantup.com/precise32.box"
   config.vm.hostname = ENV['QUICKSTART_DOMAIN']
   config.vm.network :private_network, ip: "10.86.73.81"
+  config.vm.network :forwarded_port, guest: 9200, host: 9200
+  config.vm.network :forwarded_port, guest: 9300, host: 9300
+  config.vm.network :forwarded_port, guest: 5601, host: 5601
+  config.ssh.forward_agent = true
 
   config.vm.synced_folder ".", "/srv"
   
