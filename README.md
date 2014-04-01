@@ -50,11 +50,11 @@ Conventions
 
 Host Directory Structure
 ------------------------
-.
-├── puppet
-│
-├── talks – holds all the talk files, synced to `~/.talks` on the VM.
-│   └── talk-slug
-│
-└── www – holds the web interface for `http://vip-workshop.dev/` – talks listing,
-         source file highlighting service. Synced to `~/www` on the VM.
+    .
+    ├── puppet
+    │
+    ├── talks – holds all the talk files, synced to ~/.talks on the VM.
+    │   └── talk-slug
+    │
+    └── www – holds the web interface for http://vip-workshop.dev/ – talks listing,
+         source file highlighting service. Synced to ~/www on the VM.
