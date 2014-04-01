@@ -1,5 +1,10 @@
 <?php
 
+define( 'LATEST_INTERVAL', 5000 ); // ms
+define( 'STAMPEDE_INTERVAL', 1000 ); // ms
+define( 'STAMPEDE_SLEEP', 5 ); // seconds
+define( 'STAMPEDE_CACHE_TIME', 30000 ); // ms
+
 require( __DIR__ . '/includes/redirects.php' );
 require( __DIR__ . '/includes/pbe-ads.php' );
 require( __DIR__ . '/includes/json.php' );

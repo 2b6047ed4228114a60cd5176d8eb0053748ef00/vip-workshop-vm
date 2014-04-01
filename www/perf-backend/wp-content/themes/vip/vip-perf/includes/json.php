@@ -5,9 +5,9 @@ if ( false !== strpos( $_SERVER['REQUEST_URI'], '/slow.json' ) ) {
 	$cache_miss = false === $value;
 
 	if ( $cache_miss ) {
-		sleep( 5 ); // substitute for some slow operation
+		sleep( STAMPEDE_SLEEP ); // substitute for some slow operation
 		$value = intval( $_GET['i'] );
-		wp_cache_set( 'pbe_slow_json', $value, false, 30 );
+		wp_cache_set( 'pbe_slow_json', $value, false, STAMPEDE_CACHE_TIME );
 	}
 
 	echo json_encode( array( 'cache_miss' => $cache_miss, 'value' => $value ) );

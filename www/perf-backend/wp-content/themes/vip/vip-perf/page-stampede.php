@@ -75,16 +75,27 @@ jQuery( function( $ ) {
 		return seconds;
 	}
 
-	var index = 0;
+	var index = 0,
+		is_stampeding = false;
+		stampede_interval = false;
 
-	setInterval( pbe_get_latest, 10000 );
+	setInterval( pbe_get_latest, <?php echo intval( LATEST_INTERVAL ) ?> );
 
 	jQuery( '#start-stampede' ).on( 'click', function() {
-		setInterval( function() {
-			index++;
-			console.log( 'stampede request #' + index );
-			pbe_get_slow( index );
-		}, 1000 );
+		if ( ! is_stampeding ) {
+			is_stampeding = true;
+			$( this ).html( 'Stop Stampeding' );
+			stampede_interval = setInterval( function() {
+				index++;
+				console.log( 'stampede request #' + index );
+				pbe_get_slow( index );
+			}, <?php echo intval( STAMPEDE_INTERVAL ); ?> );
+		} else {
+			clearInterval( stampede_interval );
+			is_stampeding = false;
+			$( this ).html( 'Start Stampeding' );
+			index = 0;
+		}
 	} );
 } );
 </script>
