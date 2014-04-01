@@ -1,6 +1,8 @@
 <?php
 
 require( __DIR__ . '/includes/redirects.php' );
+require( __DIR__ . '/includes/pbe-ads.php' );
+require( __DIR__ . '/includes/json.php' );
 
 add_action( 'wp_enqueue_scripts', function() {
 	wp_register_style( 'parent-style', get_template_directory_uri() . '/style.css' );

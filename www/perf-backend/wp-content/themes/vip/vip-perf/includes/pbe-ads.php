@@ -20,7 +20,7 @@ function pbe_load_ad() {
 
 function pbe_show_ad( $id, $pos, $size ) {
 	?>
-	<iframe src="<?php echo esc_url( pbe_get_ajax_ad_url( $id, $pos, $size ) ); ?>" width="300" height="250"></iframe>
+	<iframe src="<?php echo esc_url( pbe_get_ajax_ad_url( $id, $pos, $size ) ); ?>" width="300" height="250" scrolling="no" style="margin: 0 auto;"></iframe>
 	<?php
 }
 
