@@ -3,8 +3,8 @@
 // This file is super secret! Don't let anyone read it!
 
 define('DB_NAME', 'frontend');
-define('DB_USER', 'username_here');
-define('DB_PASSWORD', 'password_here');
+define('DB_USER', 'root');
+define('DB_PASSWORD', 'root');
 define('DB_HOST', 'localhost');
 define('DB_CHARSET', 'utf8');
 define('DB_COLLATE', '');
