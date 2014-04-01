@@ -26,7 +26,6 @@ get_header(); ?>
 					// Include the page content template.
 					get_template_part( 'content', 'page' );
 
-					comments_number();
 				endwhile;
 				wp_reset_postdata();
 			?>
